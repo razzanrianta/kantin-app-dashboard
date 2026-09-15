@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import api from '@/api/axios'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
 
@@ -19,7 +20,8 @@ async function login() {
   try {
     const response = await api.post('/auth/login', loginForm)
     auth.setToken(response.data.access_token)
-    console.log('Login Success')
+    await auth.fetchUser()
+    useRouter().push('/merchants')
   } catch (err) {
     error.value = 'Email atau password salah'
   } finally {
@@ -43,8 +45,13 @@ async function login() {
 
         <input type="password" v-model="loginForm.password" placeholder="Password" />
       </div>
-
       <button type="submit">Login</button>
     </form>
   </div>
 </template>
+
+<style>
+.red-text {
+  color: red;
+}
+</style>

@@ -1,45 +1,63 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { reactive, ref } from 'vue'
+import api from '@/api/axios'
+import { useRouter } from 'vue-router'
+import router from '@/router'
+
+const auth = useAuthStore()
 
 const registerForm = reactive({
-  username: '',
   email: '',
+  username: '',
   password: '',
 })
 
-function submitRegister() {
-  if (!registerForm.username) {
-    alert('Username harus ada')
-    return
+const error = ref('')
+const loading = ref(false)
+
+async function register() {
+  loading.value = true
+  error.value = ''
+
+  try {
+    await api.post('/auth/register', registerForm)
+    const loginForm = {
+      email: registerForm.email,
+      password: registerForm.password,
+    }
+    const loginResponse = await api.post('/auth/login', loginForm)
+    auth.setToken(loginResponse.data.access_token)
+    useRouter().push('/merchants')
+  } catch (err) {
+    error.value = 'Ada kesalahan'
+  } finally {
+    loading.value = false
   }
-  if (!registerForm.email) {
-    alert('Email harus ada')
-    return
-  }
-  if (!registerForm.password) {
-    alert('Password harus ada')
-    return
-  }
-  console.log(registerForm)
 }
 </script>
 
 <template>
   <div>
-    <form @submit.prevent="submitRegister">
+    <h1>Register</h1>
+
+    <form @submit.prevent="register">
       <div>
-        <label>Username</label>
-        <input type="text" v-model="registerForm.username" />
+        <label>Email</label>
+
+        <input type="email" v-model="registerForm.email" placeholder="Email" />
       </div>
 
       <div>
-        <label>Email</label>
-        <input type="email" v-model="registerForm.email" />
+        <label>Username</label>
+
+        <input type="text" v-model="registerForm.username" placeholder="Username" />
       </div>
 
       <div>
         <label>Password</label>
-        <input type="password" v-model="registerForm.password" />
+
+        <input type="password" v-model="registerForm.password" placeholder="Password" />
       </div>
 
       <button type="submit">Register</button>

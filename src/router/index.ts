@@ -8,6 +8,8 @@ import OrdersView from '@/views/OrdersView.vue'
 import PaymentView from '@/views/PaymentView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import CartView from '@/views/CartView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,7 +71,22 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: '/cart',
+      component: CartView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
+})
+
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return '/login'
+  }
 })
 
 export default router

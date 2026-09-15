@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
+import { useCartStore } from '@/stores/cart'
 
 const auth = useAuthStore()
+
+const cartStore = useCartStore()
 
 async function logout() {
   auth.logout()
@@ -15,6 +18,8 @@ async function logout() {
       <RouterLink to="/merchants">Merchants</RouterLink>
 
       <RouterLink to="/orders">My Orders</RouterLink>
+      <RouterLink to="/myshops" v-if="auth.user?.merchants.length">My Shops</RouterLink>
+      <RouterLink to="/cart">Cart {{ cartStore.itemCount }}</RouterLink>
 
       <button @click="logout">Logout</button>
     </template>

@@ -1,40 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { Product } from '@/types/merchant'
 
 const props = defineProps<{
-  name: string
-  price: number
+  product: Product
 }>()
 
-const emit = defineEmits<{
-  quantityChange: [quantity: number]
+const emits = defineEmits<{
+  addToCart: [product: Product]
+  decreaseCart: [product: Product]
 }>()
-
-const quantity = ref(0)
-
-function increase() {
-  quantity.value++
-
-  emit('quantityChange', quantity.value)
-}
-
-function decrease() {
-  if (quantity.value > 0) {
-    quantity.value--
-  }
-
-  emit('quantityChange', quantity.value)
-}
 </script>
 
 <template>
   <div>
-    <h3>{{ props.name }}</h3>
-    <p>Rp{{ props.price }}</p>
-    <button @click="decrease">-</button>
-    <span>
-      {{ quantity }}
-    </span>
-    <button @click="increase">+</button>
+    <img :src="`http://localhost:3000/${product.image}`" alt="gambar" />
+    <h3>{{ props.product.name }}</h3>
+    <p>Rp{{ props.product.price }}</p>
+    <button @click="emits('addToCart', product)">+</button>
+    <button @click="emits('decreaseCart', product)">-</button>
   </div>
 </template>
