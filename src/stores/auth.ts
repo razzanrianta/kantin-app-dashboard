@@ -2,6 +2,8 @@ import type { User } from '@/types/auth'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '@/api/axios'
+import { useRouter } from 'vue-router'
+import { useCartStore } from './cart'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('access_token'))
@@ -9,6 +11,10 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoggedIn = ref(!!token.value)
 
   const user = ref<User | null>(null)
+
+  const router = useRouter()
+
+  const cartStore = useCartStore()
 
   function setToken(newToken: string) {
     token.value = newToken
@@ -28,6 +34,8 @@ export const useAuthStore = defineStore('auth', () => {
     isLoggedIn.value = false
 
     localStorage.removeItem('access_token')
+    cartStore.clearCart()
+    router.push('/login')
   }
 
   async function initialize() {

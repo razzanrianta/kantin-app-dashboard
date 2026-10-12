@@ -5,11 +5,14 @@ import MerchantListView from '@/views/MerchantListView.vue'
 import MyShopsView from '@/views/MyShopsView.vue'
 import OrderDetailsView from '@/views/OrderDetailsView.vue'
 import OrdersView from '@/views/OrdersView.vue'
-import PaymentView from '@/views/PaymentView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import CartView from '@/views/CartView.vue'
+import OneShopView from '@/views/OneShopView.vue'
+import MyShopSalesView from '@/views/MyShopSalesView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import SalesDetailView from '@/views/SalesDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +28,13 @@ const router = createRouter({
     {
       path: '/merchants',
       component: MerchantListView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/profile',
+      component: ProfileView,
       meta: {
         requiresAuth: true,
       },
@@ -58,15 +68,29 @@ const router = createRouter({
       },
     },
     {
-      path: '/orders/:orderId/payment',
-      component: PaymentView,
+      path: '/myshops',
+      component: MyShopsView,
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: '/myshops',
-      component: MyShopsView,
+      path: '/myshops/:merchantId',
+      component: OneShopView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/myshops/:merchantId/sales',
+      component: MyShopSalesView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/myshops/:merchantId/sales/:orderId',
+      component: SalesDetailView,
       meta: {
         requiresAuth: true,
       },
